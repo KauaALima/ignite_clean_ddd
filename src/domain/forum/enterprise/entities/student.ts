@@ -1,5 +1,5 @@
-import { Entity } from "../../core/entities/entity"
-import type { UniqueEntityId } from "../../core/entities/unique-entity-id"
+import { Entity } from '../../../../core/entities/entity'
+import type { UniqueEntityId } from '../../../../core/entities/unique-entity-id'
 
 interface StudentProps {
   name: string
@@ -11,4 +11,4 @@ export class Student extends Entity<StudentProps> {
 
     return student
   }
-} 
+}
