@@ -4,7 +4,7 @@ import type { UniqueEntityId } from '../../../../core/entities/unique-entity-id'
 import type { Optional } from '../../../../core/types/optional'
 import dayjs from 'dayjs'
 
-interface QuesionsProps {
+export interface QuestionsProps {
   authorId: UniqueEntityId
   bestAnswerId?: UniqueEntityId
   title: string
@@ -14,7 +14,7 @@ interface QuesionsProps {
   updatedAt?: Date
 }
 
-export class Questions extends Entity<QuesionsProps> {
+export class Questions extends Entity<QuestionsProps> {
   get authorId() {
     return this.props.authorId
   }
@@ -72,7 +72,7 @@ export class Questions extends Entity<QuesionsProps> {
   }
 
   static create(
-    props: Optional<QuesionsProps, 'createdAt' | 'slug'>,
+    props: Optional<QuestionsProps, 'createdAt' | 'slug'>,
     id?: UniqueEntityId,
   ) {
     const question = new Questions(
