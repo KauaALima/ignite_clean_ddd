@@ -1,3 +1,4 @@
+import { right, type Either } from '../../../../core/either'
 import { Questions } from '../../enterprise/entities/question'
 import type { QuestionsRepository } from '../repositories/questions-repository'
 
@@ -5,9 +6,12 @@ interface GetQuestionBySlugUseCaseRequest {
   slug: string
 }
 
-interface GetQuestionBySlugUseCaseRespose {
-  question: Questions
-}
+type GetQuestionBySlugUseCaseRespose = Either<
+  null,
+  {
+    question: Questions
+  }
+>
 
 export class GetQuestionBySlugUseCase {
   constructor(private questionsRepository: QuestionsRepository) {}
@@ -21,8 +25,8 @@ export class GetQuestionBySlugUseCase {
       throw new Error('Invalid Slug')
     }
 
-    return {
+    return right({
       question,
-    }
+    })
   }
 }

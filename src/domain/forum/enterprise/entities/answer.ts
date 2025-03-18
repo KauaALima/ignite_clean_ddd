@@ -1,16 +1,19 @@
-import { Entity } from '../../../../core/entities/entity'
-import type { UniqueEntityId } from '../../../../core/entities/unique-entity-id'
-import type { Optional } from '../../../../core/types/optional'
+import { AggregateRoot } from '../../../../core/entities/aggregate-root'
+import { UniqueEntityId } from '../../../../core/entities/unique-entity-id'
+import { Optional } from '../../../../core/types/optional'
+import { AnswerCreatedEvent } from '../../envents/answer-created-event'
+import { AnswerAttachmentList } from './answer-attachment-list'
 
-interface AnswerPops {
+export interface AnswerPops {
   authorId: UniqueEntityId
   questionId: UniqueEntityId
   content: string
+  attachments: AnswerAttachmentList
   createdAt: Date
   updatedAt?: Date
 }
 
-export class Answer extends Entity<AnswerPops> {
+export class Answer extends AggregateRoot<AnswerPops> {
   get authorId() {
     return this.props.authorId
   }
@@ -23,12 +26,16 @@ export class Answer extends Entity<AnswerPops> {
     return this.props.content
   }
 
+  get attachments() {
+    return this.props.attachments
+  }
+
   get createdAt() {
-    return this.props.content
+    return this.props.createdAt
   }
 
   get updatedAt() {
-    return this.props.content
+    return this.props.updatedAt
   }
 
   get excerpt() {
@@ -44,14 +51,29 @@ export class Answer extends Entity<AnswerPops> {
     this.touch()
   }
 
-  static create(props: Optional<AnswerPops, 'createdAt'>, id?: UniqueEntityId) {
+  set attachments(attachments: AnswerAttachmentList) {
+    this.props.attachments = attachments
+    this.touch()
+  }
+
+  static create(
+    props: Optional<AnswerPops, 'createdAt' | 'attachments'>,
+    id?: UniqueEntityId,
+  ) {
     const answer = new Answer(
       {
         ...props,
-        createdAt: new Date(),
+        attachments: props.attachments ?? new AnswerAttachmentList(),
+        createdAt: props.createdAt ?? new Date(),
       },
       id,
     )
+
+    const isNewAnswer = !id
+
+    if (isNewAnswer) {
+      answer.addDomainEvent(new AnswerCreatedEvent(answer))
+    }
 
     return answer
   }
